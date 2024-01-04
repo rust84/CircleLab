@@ -46,6 +46,7 @@ jobs:
           root: .
           paths:
             - .
+            - ~/.aws
   plan-apply:
     resource_class: small
     working_directory: /tmp/project
