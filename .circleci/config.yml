@@ -45,8 +45,11 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
-            - ../../root/.aws
             - .
+      - save_cache:
+          key: v1-aws-{{ .Branch }}-{{ epoch }}
+          paths:
+            - ~/.aws  
   plan-apply:
     resource_class: small
     working_directory: /tmp/project
@@ -55,6 +58,9 @@ jobs:
       - attach_workspace:
           at: .
       - checkout
+      - restore_cache:
+          keys:
+          - v1-aws-{{ .Branch }}-
       - run:
           #working_directory: ./modules/setup-backend
           name: terraform init & plan
@@ -70,6 +76,9 @@ jobs:
     steps:
       - attach_workspace:
           at: .
+      - restore_cache:
+          keys:
+          - v1-aws-{{ .Branch }}-
       - run:
           name: terraform
           command: |
@@ -77,13 +86,15 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
-            - ../../root/.aws
             - .
   plan-destroy:
     executor: terraform
     steps:
       - attach_workspace:
           at: .
+      - restore_cache:
+          keys:
+          - v1-aws-{{ .Branch }}-
       - run:
           name: terraform create destroy plan
           command: |
@@ -91,13 +102,15 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
-            - ../../root/.aws
             - .
   destroy:
     executor: terraform
     steps:
       - attach_workspace:
           at: .
+      - restore_cache:
+          keys:
+          - v1-aws-{{ .Branch }}-
       - run:
           name: terraform destroy
           command: |
