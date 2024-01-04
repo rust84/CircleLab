@@ -6,7 +6,10 @@ parameters:
     default: eu-west-1
   profile-name:
     type: string
-    default: aws-profile
+    default: default
+  role-arn:
+    type: string
+    default: "arn:aws:iam::446168904202:role/RoleForCircleCI"
   session-name:
     type: string
     default: circleci-session
@@ -15,7 +18,7 @@ parameters:
     default: "300"
 
 orbs:
-  aws-cli: circleci/aws-cli@3.1.5
+  aws-cli: circleci/aws-cli@4.1.2
 
 jobs:
   aws-example:
@@ -25,14 +28,11 @@ jobs:
       - image: cimg/aws:2023.06
     steps:
       - checkout
-      # run the aws-cli/setup command from the orb
       - aws-cli/setup:
-          role-arn: "arn:aws:iam::446168904202:role/RoleForCircleCI"
-          aws-region: << pipeline.parameters.region >>
-          # optional parameters
-          profile-name: << pipeline.parameters.profile-name >>
-          role-session-name: << pipeline.parameters.session-name >>
-          session-duration: << pipeline.parameters.session-duration >>
+          profile_name: << pipeline.parameters.profile-name >>
+          role_arn: << pipeline.parameters.role-arn >>
+          role_session_name: << pipeline.parameters.session-name >>
+          region: << pipeline.parameters.region >>
       - run:
           name: Log-into-AWS-ECR
           command: |
