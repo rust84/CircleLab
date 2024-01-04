@@ -36,7 +36,7 @@ jobs:
       - run:
           name: Log-into-AWS-ECR
           command: |
-            aws ecr get-login-password --profile << pipeline.parameters.session-name >>
+            aws ecr get-login-password --profile << pipeline.parameters.profile-name >>
 
 workflows:
   OIDC-with-AWS:
