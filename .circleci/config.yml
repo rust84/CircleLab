@@ -113,11 +113,9 @@ workflows:
             - plan-apply
       - apply:
           requires:
-            - aws-setup
             - hold-apply
       - plan-destroy:
           requires:
-            - aws-setup
             - apply
       - hold-destroy:
           type: approval
@@ -125,5 +123,4 @@ workflows:
             - plan-destroy
       - destroy:
           requires:
-            - aws-setup
             - hold-destroy

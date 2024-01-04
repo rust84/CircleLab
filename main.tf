@@ -1,17 +1,16 @@
-# module "remote_state" {
-#   source = "nozaq/remote-state-s3-backend/aws"
-#   enable_replication = false
+resource "random_uuid" "randomid" {}
 
-#   providers = {
-#     aws         = aws
-#   }
-# }
-
-resource "aws_s3_bucket" "example" {
-  bucket = "my-tf-test-bucket"
-
+resource "aws_s3_bucket" "app" {
   tags = {
-    Name        = "My bucket"
-    Environment = "Dev"
+    Name = "App Bucket"
   }
+
+  bucket        = "${var.app}.${var.label}.${random_uuid.randomid.result}"
+  force_destroy = true
+}
+
+
+resource "aws_s3_bucket_acl" "bucket" {
+  bucket = aws_s3_bucket.app.id
+  acl    = "public-read"
 }

@@ -1,6 +1,5 @@
 provider "aws" {
-  region = "eu-west-1"
-  profile = "default"
+  region = var.region
 
   # assume_role {
   #   role_arn = ""
@@ -9,8 +8,9 @@ provider "aws" {
   default_tags {
     tags = {
       environment = "circleci"
-      created-by = "terraform"
-      owner     = "russell"
+      created-by  = "terraform"
+      label       = var.label
+      app         = var.app
     }
   }
 }
