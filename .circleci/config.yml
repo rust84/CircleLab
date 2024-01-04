@@ -20,10 +20,14 @@ parameters:
 orbs:
   aws-cli: circleci/aws-cli@4.1.2
 
+executors:
+  terraform:
+    docker:
+      - image: hashicorp/terraform:1.6.0
+
 jobs:
-  aws-example:
-    environment:
-      AWS_REGION: eu-west-1
+  aws-setup:
+    resource_class: small
     docker:
       - image: cimg/aws:2023.06
     steps:
@@ -31,15 +35,25 @@ jobs:
       - aws-cli/setup:
           profile_name: << pipeline.parameters.profile-name >>
           role_arn: << pipeline.parameters.role-arn >>
+          # optional
           role_session_name: << pipeline.parameters.session-name >>
           region: << pipeline.parameters.region >>
       - run:
           name: Log-into-AWS-ECR
           command: |
-            aws ecr get-login-password --profile << pipeline.parameters.profile-name >>
+            aws sts get-caller-identity --profile << pipeline.parameters.profile-name >>
+  plan-apply-module:
+    resource_class: small
+    executor: terraform
+    steps:
+      - run:
+          working_directory: modules/setup-backend
+          name: terraform plan
+          command: terraform plan
 
 workflows:
-  OIDC-with-AWS:
+  plan-apply:
     jobs:
-      - aws-example:
+      - aws-setup:
           context: aws
+      - plan-apply-module
