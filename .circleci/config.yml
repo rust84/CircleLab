@@ -43,10 +43,10 @@ jobs:
           command: |
             aws sts get-caller-identity --profile << pipeline.parameters.profile-name >>
       - persist_to_workspace:
-          root: /
+          root: .
           paths:
-            - /root/.aws
-            - /tmp/project
+            - ../../root/.aws
+            - .
   plan-apply:
     resource_class: small
     working_directory: /tmp/project
@@ -69,35 +69,35 @@ jobs:
     executor: terraform
     steps:
       - attach_workspace:
-          at: /
+          at: .
       - run:
           name: terraform
           command: |
             terraform apply -auto-approve tfapply
       - persist_to_workspace:
-          root: /
+          root: .
           paths:
-            - /root/.aws
-            - /tmp/project
+            - ../../root/.aws
+            - .
   plan-destroy:
     executor: terraform
     steps:
       - attach_workspace:
-          at: /
+          at: .
       - run:
           name: terraform create destroy plan
           command: |
             terraform plan -destroy -out tfdestroy -var-file terraform.tfvars
       - persist_to_workspace:
-          root: /
+          root: .
           paths:
-            - /root/.aws
-            - /tmp/project
+            - ../../root/.aws
+            - .
   destroy:
     executor: terraform
     steps:
       - attach_workspace:
-          at: /
+          at: .
       - run:
           name: terraform destroy
           command: |
