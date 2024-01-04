@@ -20,11 +20,6 @@ parameters:
 orbs:
   aws-cli: circleci/aws-cli@4.1.2
 
-executors:
-  terraform:
-    docker:
-      - image: hashicorp/terraform:1.6.0
-
 jobs:
   aws-setup:
     resource_class: small
@@ -43,28 +38,52 @@ jobs:
           command: |
             aws sts get-caller-identity --profile << pipeline.parameters.profile-name >>
       - persist_to_workspace:
-          root: "~"
-          paths: [.aws]
-  plan-apply-module:
+          root: .
+          paths:
+            - .
+  plan-apply:
     resource_class: small
-    executor: terraform
+    docker:
+      - image: docker.mirror.hashicorp.services/hashicorp/terraform:light
     steps:
       - attach_workspace:
-          at: "~/.aws"
+          at: .
       - run:
           #working_directory: ./modules/setup-backend
           name: terraform plan
           command: |
             pwd
             ls -al
-            terraform init
-            terraform plan
+            terraform init -input=false
+            terraform plan -out tfapply
+  apply:
+    docker:
+      - image: docker.mirror.hashicorp.services/hashicorp/terraform:light
+    steps:
+      - attach_workspace:
+          at: .
+      - run:
+          name: terraform
+          command: |
+            terraform apply -auto-approve tfapply
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
+
 
 workflows:
-  plan-apply:
+  plan_approve_apply:
     jobs:
       - aws-setup:
           context: aws
-      - plan-apply-module:
+      - plan-apply:
+          requires:
+            - aws-setup
+      - hold-apply:
+          type: approval
+          requires:
+            - plan-apply
+      - apply:
           requires:
             - aws-setup
