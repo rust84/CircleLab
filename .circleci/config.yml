@@ -1,5 +1,19 @@
 version: 2.1
 
+parameters:
+  region:
+    type: string
+    default: eu-west-1
+  profile-name:
+    type: string
+    default: aws-profile
+  session-name:
+    type: string
+    default: circleci-session
+  session-duration:
+    type: string
+    default: "300"
+
 orbs:
   aws-cli: circleci/aws-cli@3.1.5
 
@@ -14,15 +28,15 @@ jobs:
       # run the aws-cli/setup command from the orb
       - aws-cli/setup:
           role-arn: "arn:aws:iam::446168904202:role/RoleForCircleCI"
-          aws-region: ${AWS_REGION}
+          aws-region: << pipeline.parameters.region >>
           # optional parameters
-          profile-name: "oidc-profile"
-          role-session-name: "circle-session"
-          session-duration: "300"
+          profile-name: << pipeline.parameters.profile-name >>
+          role-session-name: << pipeline.parameters.session-name >>
+          session-duration: << pipeline.parameters.session-duration >>
       - run:
           name: Log-into-AWS-ECR
           command: |
-            aws ecr get-login-password --profile circle-session
+            aws ecr get-login-password --profile << pipeline.parameters.session-name >>
 
 workflows:
   OIDC-with-AWS:
