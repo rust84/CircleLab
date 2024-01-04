@@ -55,7 +55,8 @@ jobs:
           #working_directory: ./modules/setup-backend
           name: terraform plan
           command: |
-            cd modules/setup-backend
+            pwd
+            ls -al
             terraform init
             terraform plan
 
