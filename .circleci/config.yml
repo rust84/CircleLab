@@ -43,8 +43,8 @@ jobs:
           command: |
             aws sts get-caller-identity --profile << pipeline.parameters.profile-name >>
       - persist_to_workspace:
-          root: .
-          paths: [~/.aws]
+          root: "~"
+          paths: [.aws]
   plan-apply-module:
     resource_class: small
     executor: terraform
