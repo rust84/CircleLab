@@ -39,7 +39,7 @@ jobs:
           role_session_name: << pipeline.parameters.session-name >>
           region: << pipeline.parameters.region >>
       - run:
-          name: Log-into-AWS-ECR
+          name: get-caller-identity
           command: |
             aws sts get-caller-identity --profile << pipeline.parameters.profile-name >>
   plan-apply-module:
@@ -51,9 +51,12 @@ jobs:
           name: terraform plan
           command: terraform plan
 
+
 workflows:
   plan-apply:
     jobs:
       - aws-setup:
           context: aws
-      - plan-apply-module
+      - plan-apply-module:
+          requires:
+            - aws-setup
