@@ -21,8 +21,8 @@ orbs:
   aws-cli: circleci/aws-cli@4.1.2
 
 environment:
-  AWS_CONFIG_FILE: /home/circle/.aws/config
-  AWS_SHARED_CREDENTIALS_FILE: /home/circle/.aws/credentials
+  AWS_CONFIG_FILE: /home/circleci/.aws/config
+  AWS_SHARED_CREDENTIALS_FILE: /home/circleci/.aws/credentials
 
 executors:
   terraform:
@@ -54,7 +54,7 @@ jobs:
       - save_cache:
           key: v1-aws-{{ .Branch }}-{{ epoch }}
           paths:
-            - /home/circle/.aws  
+            - /home/circleci/.aws
   plan-apply:
     resource_class: small
     working_directory: /tmp/project
