@@ -70,9 +70,12 @@ jobs:
       - run:
           name: terraform init & plan
           command: |
-            cat $AWS_CONFIG_FILE
             terraform init -input=false
             terraform plan -out tfapply
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
   apply:
     environment:
       AWS_CONFIG_FILE: /home/circleci/.aws/config
@@ -128,6 +131,10 @@ jobs:
           name: terraform destroy
           command: |
             terraform apply -auto-approve tfdestroy
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
 
 workflows:
   plan_approve_apply:
