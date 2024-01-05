@@ -12,5 +12,5 @@ resource "aws_s3_bucket" "app" {
 
 resource "aws_s3_bucket_acl" "bucket" {
   bucket = aws_s3_bucket.app.id
-  acl    = "public-read"
+  acl    = "private"
 }
