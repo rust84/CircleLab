@@ -45,7 +45,7 @@ jobs:
       - run:
           name: get-caller-identity
           command: |
-            id
+            cat $AWS_CONFIG_FILE
             aws sts get-caller-identity --profile << pipeline.parameters.profile-name >>
       - persist_to_workspace:
           root: .
@@ -70,8 +70,7 @@ jobs:
           #working_directory: ./modules/setup-backend
           name: terraform init & plan
           command: |
-            pwd
-            ls -al
+            cat $AWS_CONFIG_FILE
             terraform init -input=false
             terraform plan -out tfapply
   apply:
