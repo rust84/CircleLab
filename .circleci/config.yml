@@ -9,7 +9,7 @@ parameters:
     default: default
   role-arn:
     type: string
-    default: "arn:aws:iam::446168904202:role/RoleForCircleCI"
+    default: "arn:aws:iam::446168904202:role/terraform-backend"
   session-name:
     type: string
     default: circleci-session
