@@ -20,10 +20,6 @@ parameters:
 orbs:
   aws-cli: circleci/aws-cli@4.1.2
 
-environment:
-  AWS_CONFIG_FILE: /home/circleci/.aws/config
-  AWS_SHARED_CREDENTIALS_FILE: /home/circleci/.aws/credentials
-
 executors:
   terraform:
     docker:
@@ -31,6 +27,9 @@ executors:
 
 jobs:
   aws-setup:
+    environment:
+      AWS_CONFIG_FILE: /home/circleci/.aws/config
+      AWS_SHARED_CREDENTIALS_FILE: /home/circleci/.aws/credentials
     resource_class: small
     docker:
       - image: cimg/aws:2023.06
@@ -45,7 +44,6 @@ jobs:
       - run:
           name: get-caller-identity
           command: |
-            cat $AWS_CONFIG_FILE
             aws sts get-caller-identity --profile << pipeline.parameters.profile-name >>
       - persist_to_workspace:
           root: .
@@ -56,6 +54,9 @@ jobs:
           paths:
             - /home/circleci/.aws
   plan-apply:
+    environment:
+      AWS_CONFIG_FILE: /home/circleci/.aws/config
+      AWS_SHARED_CREDENTIALS_FILE: /home/circleci/.aws/credentials
     resource_class: small
     working_directory: /tmp/project
     executor: terraform
@@ -67,13 +68,15 @@ jobs:
           keys:
           - v1-aws-{{ .Branch }}-
       - run:
-          #working_directory: ./modules/setup-backend
           name: terraform init & plan
           command: |
             cat $AWS_CONFIG_FILE
             terraform init -input=false
             terraform plan -out tfapply
   apply:
+    environment:
+      AWS_CONFIG_FILE: /home/circleci/.aws/config
+      AWS_SHARED_CREDENTIALS_FILE: /home/circleci/.aws/credentials
     resource_class: small
     working_directory: /tmp/project
     executor: terraform
@@ -92,6 +95,9 @@ jobs:
           paths:
             - .
   plan-destroy:
+    environment:
+      AWS_CONFIG_FILE: /home/circleci/.aws/config
+      AWS_SHARED_CREDENTIALS_FILE: /home/circleci/.aws/credentials
     executor: terraform
     steps:
       - attach_workspace:
@@ -108,6 +114,9 @@ jobs:
           paths:
             - .
   destroy:
+    environment:
+      AWS_CONFIG_FILE: /home/circleci/.aws/config
+      AWS_SHARED_CREDENTIALS_FILE: /home/circleci/.aws/credentials
     executor: terraform
     steps:
       - attach_workspace:
