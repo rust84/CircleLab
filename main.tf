@@ -17,7 +17,7 @@ resource "aws_s3_bucket_ownership_controls" "ownership" {
 }
 
 resource "aws_s3_bucket_public_access_block" "public-access-block" {
-  bucket = aws_s3_bucket.example.id
+  bucket = aws_s3_bucket.app.id
 
   block_public_acls       = true
   block_public_policy     = true
