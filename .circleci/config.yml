@@ -147,25 +147,33 @@ workflows:
           filters:
             tags:
               only: /.*/
+            branches:
+              ignore: /.*/
       - hold-apply:
           type: approval
           requires:
             - plan-apply
           filters:
             tags:
-              only: /.*/          
+              only: /.*/
+            branches:
+              ignore: /.*/          
       - apply:
           requires:
             - hold-apply
           filters:
             tags:
-              only: /.*/   
+              only: /.*/
+            branches:
+              ignore: /.*/   
       - plan-destroy:
           requires:
             - apply
           filters:
             tags:
               only: /.*/
+            branches:
+              ignore: /.*/
       - hold-destroy:
           type: approval
           requires:
@@ -173,9 +181,13 @@ workflows:
           filters:
             tags:
               only: /.*/
+            branches:
+              ignore: /.*/
       - destroy:
           requires:
             - hold-destroy
           filters:
             tags:
               only: /.*/
+            branches:
+              ignore: /.*/
