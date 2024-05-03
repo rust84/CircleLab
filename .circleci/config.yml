@@ -144,20 +144,38 @@ workflows:
       - plan-apply:
           requires:
             - aws-setup
+          filters:
+            tags:
+              only: /.*/
       - hold-apply:
           type: approval
           requires:
             - plan-apply
+          filters:
+            tags:
+              only: /.*/          
       - apply:
           requires:
             - hold-apply
+          filters:
+            tags:
+              only: /.*/   
       - plan-destroy:
           requires:
             - apply
+          filters:
+            tags:
+              only: /.*/
       - hold-destroy:
           type: approval
           requires:
             - plan-destroy
+          filters:
+            tags:
+              only: /.*/
       - destroy:
           requires:
             - hold-destroy
+          filters:
+            tags:
+              only: /.*/
