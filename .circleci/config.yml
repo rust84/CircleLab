@@ -141,6 +141,11 @@ workflows:
     jobs:
       - aws-setup:
           context: aws
+          filters:
+            tags:
+              only: /.*/
+            branches:
+              ignore: /.*/
       - plan-apply:
           requires:
             - aws-setup
